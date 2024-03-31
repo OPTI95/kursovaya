@@ -1,0 +1,23 @@
+name: Flutter Syntax Check
+
+on:
+  push:
+    branches:
+      - main  # измените на вашу основную ветку
+
+jobs:
+  build:
+    name: Analyze Flutter Syntax
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 'stable'
+
+    - name: Run Flutter Analyze
+      run: flutter analyze
