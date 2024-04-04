@@ -177,22 +177,7 @@ class SnilsViewPage extends StatelessWidget {
                   ),
                 ),
               ),
-               SizedBox(height: 100,),
-            Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: BarcodeWidget(
-                  barcode: Barcode.qrCode(),
-                  data: (context.read<DocumentCubit>().state as DocumentLoaded).list[0].snils,
-                  width: 300,
-                  height: 300,
-                  color: Colors.black,
-                  drawText: true,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
+             
             ],
           ),
         ),

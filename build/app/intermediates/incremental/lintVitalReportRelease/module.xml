@@ -1,0 +1,18 @@
+<lint-module
+    format="1"
+    dir="C:\Users\95kil\Desktop\wallet\android\app"
+    name=":app"
+    type="APP"
+    maven="android:app:"
+    gradle="7.3.0"
+    buildFolder="C:\Users\95kil\Desktop\wallet\build\app"
+    bootClassPath="D:\sdk\platforms\android-34\android.jar;D:\sdk\build-tools\30.0.3\core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-34">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

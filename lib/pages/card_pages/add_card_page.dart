@@ -199,14 +199,32 @@ class _AddCardPageState extends State<AddCardPage> {
                 child: SizedBox(
                   height: 60,
                   child: ElevatedButton(
-                      onPressed: () async {
+                    onPressed: () async {
+                      if (nameCard.text.isEmpty ||
+                          barcode.text.isEmpty ||
+                          cvcCode.text.isEmpty ||
+                          numberCode.text.isEmpty) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Ошибка, пустые данные добавления карты"),
+                            content: Text("Пожалуйста, заполните все поля."),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text("OK"),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
                         final database = WalletDatabase();
-                        await database.open();
                         final card = CardData(
-                            name: nameCard.text,
-                            barcode: barcode.text,
-                            cvcCode: cvcCode.text,
-                            cardNumber: numberCode.text);
+                          name: nameCard.text,
+                          barcode: barcode.text,
+                          cvcCode: cvcCode.text,
+                          cardNumber: numberCode.text,
+                        );
                         await database.insertCard(card);
                         Navigator.push(
                           context,
@@ -215,18 +233,21 @@ class _AddCardPageState extends State<AddCardPage> {
                             child: BottomNavigationBarPage(),
                           ),
                         );
-                      },
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromARGB(255, 50, 43, 85)),
+                      }
+                    },
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(
+                          Color.fromARGB(255, 50, 43, 85)),
+                    ),
+                    child: Text(
+                      "Добавить карту",
+                      style: GoogleFonts.gabriela(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      child: Text(
-                        "Добавить карту",
-                        style: GoogleFonts.gabriela(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(

@@ -7,6 +7,7 @@ import 'package:wallet/controllers/wallet_bd.dart';
 import 'package:wallet/controllers/cubit/card_cubit.dart';
 import 'package:wallet/pages/card_pages/add_card_page.dart';
 import 'package:wallet/pages/card_pages/view_card_page.dart';
+import 'package:wallet/pages/document_pages/document_add_page.dart';
 import 'package:wallet/pages/document_pages/document_edit_page.dart';
 import 'package:wallet/pages/document_pages/document_shablon_page.dart';
 import 'package:wallet/pages/welcome_pages.dart/second_welcome_page.dart';
@@ -57,13 +58,15 @@ class _DocumentPageState extends State<DocumentPage> {
               Spacer(),
               IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.topToBottom,
-                        child: DocumentEditPage(),
-                      ),
-                    );
+                    if (context.read<DocumentCubit>().state is DocumentLoaded) {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.topToBottom,
+                          child: DocumentEditPage(),
+                        ),
+                      );
+                    }
                   },
                   icon: Icon(Icons.edit))
             ],
@@ -71,46 +74,48 @@ class _DocumentPageState extends State<DocumentPage> {
           BlocBuilder<DocumentCubit, DocumentState>(
             builder: (context, state) {
               if (state is DocumentEmpty) {
-                return Column(
-                  children: [
-                    Center(
-                        child: Text(
-                      "Добавьте документ",
-                      style: GoogleFonts.gabriela(
-                        color: Color.fromARGB(255, 50, 43, 85),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 25,
+                return Expanded(
+                  child: Column(
+                    children: [
+                      Center(
+                          child: Text(
+                        "Добавьте документ",
+                        style: GoogleFonts.gabriela(
+                          color: Color.fromARGB(255, 50, 43, 85),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 25,
+                        ),
+                      )),
+                      Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: SizedBox(
+                          height: 60,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.rightToLeft,
+                                    child: DocumentAddPage(),
+                                  ),
+                                );
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                    Color.fromARGB(255, 50, 43, 85)),
+                              ),
+                              child: Text(
+                                "Добавить документ",
+                                style: GoogleFonts.gabriela(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              )),
+                        ),
                       ),
-                    )),
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.all(14.0),
-                      child: SizedBox(
-                        height: 60,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.rightToLeft,
-                                  child: AddCardPage(),
-                                ),
-                              );
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(
-                                  Color.fromARGB(255, 50, 43, 85)),
-                            ),
-                            child: Text(
-                              "Добавить документ",
-                              style: GoogleFonts.gabriela(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            )),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               } else if (state is DocumentLoaded) {
                 return DocumentShablonPage();

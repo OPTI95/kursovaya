@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:wallet/controllers/encryption.dart';
 
 class CardData {
   int? id;
@@ -123,62 +126,8 @@ class PersonData {
 
 class WalletDatabase {
   late Database _database;
-  Future<void> createContactsTable() async {
-    await open();
-    await _database.transaction((txn) async {
-      final result = await txn.rawQuery(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name='contacts'");
-      if (result.isEmpty) {
-        await txn.execute(
-          '''
-          CREATE TABLE contacts(
-            id INTEGER PRIMARY KEY,
-            lastName TEXT,
-            firstName TEXT,
-            position TEXT,
-            companyName TEXT,
-            phoneNumber TEXT,
-            email TEXT,
-            website TEXT
-          )
-          ''',
-        );
-      }
-    });
-  }
-
-  Future<void> createPersonsTable() async {
-    await open();
-    await _database.transaction((txn) async {
-      final result = await txn.rawQuery(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name='persons'");
-      if (result.isEmpty) {
-        await txn.execute(
-          '''
-          CREATE TABLE persons(
-            id INTEGER PRIMARY KEY,
-            secondName TEXT,
-            firstName TEXT,
-            thirdName TEXT,
-            snils TEXT,
-            inn TEXT,
-            polisOMS TEXT,
-            numberPassport TEXT,
-            seriaPassport TEXT,
-            snilsPassport TEXT,
-            fromIssues TEXT,
-            codePassport TEXT,
-            placeBorn TEXT,
-            gender TEXT,
-            dateBorn INTEGER,
-            dateExit INTEGER
-          )
-          ''',
-        );
-      }
-    });
-  }
-
+  final Key = Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]); 
+  final iv = Uint8List.fromList([65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80]); 
   Future<void> open() async {
     _database = await openDatabase(
       join(await getDatabasesPath(), 'wallet_database.db'),
@@ -209,51 +158,145 @@ class WalletDatabase {
         )
         ''',
         );
+        await db.execute(
+          '''
+          CREATE TABLE contacts(
+            id INTEGER PRIMARY KEY,
+            lastName TEXT,
+            firstName TEXT,
+            position TEXT,
+            companyName TEXT,
+            phoneNumber TEXT,
+            email TEXT,
+            website TEXT
+          )
+          ''',
+        );
       },
     );
   }
 
-  Future<List<ContactData>> getAllContacts() async {
-    await open();
-    final List<Map<String, dynamic>> maps = await _database.query('contacts');
-    return List.generate(maps.length, (index) {
+
+  Future<int> insertContact(ContactData contact) async {
+    final Database db = await openDatabase('wallet_database.db');
+    return await db.insert('contacts', contact.toMap());
+  }
+
+  Future<List<ContactData>> getContacts() async {
+    final Database db = await openDatabase('wallet_database.db');
+    final List<Map<String, dynamic>> maps = await db.query('contacts');
+
+    return List.generate(maps.length, (i) {
       return ContactData(
-        id: maps[index]['id'],
-        lastName: maps[index]['lastName'],
-        firstName: maps[index]['firstName'],
-        position: maps[index]['position'],
-        companyName: maps[index]['companyName'],
-        phoneNumber: maps[index]['phoneNumber'],
-        email: maps[index]['email'],
-        website: maps[index]['website'],
+        id: maps[i]['id'],
+        lastName: maps[i]['lastName'],
+        firstName: maps[i]['firstName'],
+        position: maps[i]['position'],
+        companyName: maps[i]['companyName'],
+        phoneNumber: maps[i]['phoneNumber'],
+        email: maps[i]['email'],
+        website: maps[i]['website'],
       );
     });
   }
 
-  Future<int> insertContact(ContactData contact) async {
-    await open();
-    await createContactsTable();
-    return await _database.insert('contacts', contact.toMap());
+  Future<void> deleteContact(int id) async {
+    final Database db = await openDatabase('wallet_database.db');
+    await db.delete('contacts', where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<int> updateContact(ContactData contact) async {
-    await open();
-    return await _database.update(
-      'contacts',
-      contact.toMap(),
-      where: 'id = ?',
-      whereArgs: [contact.id],
-    );
+  Future<void> updateContact(ContactData contact) async {
+    final Database db = await openDatabase('wallet_database.db');
+    await db.update('contacts', contact.toMap(),
+        where: 'id = ?', whereArgs: [contact.id]);
   }
 
-  Future<int> deleteContact(int id) async {
-    await open();
-    return await _database.delete(
-      'contacts',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
+  // ContactData _decryptContactData(Map<String, dynamic> encryptedMap) {
+  //   EncryptionHelper encryptionHelper = EncryptionHelper();
+  //   final decryptedMap =
+  //       Map<String, dynamic>.from(encryptedMap); 
+  //   decryptedMap.forEach((key, value) {
+  //     if (value != null && value is String) {
+  //       decryptedMap[key] =
+  //           encryptionHelper.decryptAES(value, Key, iv);
+  //     }
+  //   });
+  //   return ContactData(
+  //     id: decryptedMap['id'],
+  //     lastName: decryptedMap['lastName'],
+  //     firstName: decryptedMap['firstName'],
+  //     position: decryptedMap['position'],
+  //     companyName: decryptedMap['companyName'],
+  //     phoneNumber: decryptedMap['phoneNumber'],
+  //     email: decryptedMap['email'],
+  //     website: decryptedMap['website'],
+  //   );
+  // }
+
+  // Future<List<ContactData>> getAllContacts() async {
+  //   await open();
+  //   final List<Map<String, dynamic>> maps = await _database.query('contacts');
+  //   return List.generate(maps.length, (index) {
+  //     return _decryptContactData(maps[index]);
+  //   });
+  // }
+
+  // Map<String, dynamic> _encryptContactData(ContactData contact) {
+  //       EncryptionHelper encryptionHelper = EncryptionHelper();
+
+  //   final encryptedMap = contact.toMap(); 
+  //   encryptedMap.remove('id');
+  //   encryptedMap.forEach((key, value) {
+  //     if (value != null && value is String) {
+  //       encryptedMap[key] = encryptionHelper.encryptAES(
+  //           value, Key, iv); 
+  //     }
+  //   });
+  //   return encryptedMap;
+  // }
+
+
+  // Future<int> insertContact(ContactData contact) async {
+  //   await open();
+  //   final encryptedContact =
+  //       _encryptContactData(contact);
+  //   return await _database.insert(
+  //       'contacts', encryptedContact); 
+  // }
+
+
+  // Future<int> updateContact(ContactData contact) async {
+  //   await open();
+  //   final encryptedContact =
+  //       _encryptContactData(contact); 
+  //   return await _database.update(
+  //     'contacts',
+  //     encryptedContact,
+  //     where: 'id = ?',
+  //     whereArgs: [contact.id],
+  //   );
+  // }
+  // // Обновленный метод insertContact для шифрования данных перед сохранением в базу данных
+  // Future<int> insertContact(ContactData contact) async {
+  //   await open();
+  //   await createContactsTable();
+  //   final encryptedContact = _encryptContactData(contact); // шифруем контактные данные
+  //   return await _database.insert('contacts', encryptedContact);
+  // }
+
+  // // Обновленный метод updateContact для шифрования данных перед обновлением в базе данных
+  // Future<int> updateContact(ContactData contact) async {
+  //   await open();
+  //   final encryptedContact = _encryptContactData(contact); // шифруем контактные данные
+  //   return await _database.update(
+  //     'contacts',
+  //     encryptedContact,
+  //     where: 'id = ?',
+  //     whereArgs: [contact.id],
+  //   );
+  // }
+
+
 
   Future<int> insertPerson(PersonData person) async {
     await open();

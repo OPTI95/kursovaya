@@ -1,0 +1,12 @@
+be.appmire.flutter_bcrypt-jetified-annotation-experimental-1.1.0-0 C:\Users\95kil\.gradle\caches\transforms-3\09db32a73384ac2dccccf916d7dc0262\transformed\jetified-annotation-experimental-1.1.0\res
+be.appmire.flutter_bcrypt-core-1.6.0-1 C:\Users\95kil\.gradle\caches\transforms-3\168e459aae59caaab0d2c703cf9d67ab\transformed\core-1.6.0\res
+be.appmire.flutter_bcrypt-jetified-window-1.0.0-beta04-2 C:\Users\95kil\.gradle\caches\transforms-3\29fe38a5fd6c3bf46cd8e59c2b63489e\transformed\jetified-window-1.0.0-beta04\res
+be.appmire.flutter_bcrypt-jetified-window-java-1.0.0-beta04-3 C:\Users\95kil\.gradle\caches\transforms-3\978180320ed1d29d66a82edc9d24751e\transformed\jetified-window-java-1.0.0-beta04\res
+be.appmire.flutter_bcrypt-main-4 C:\Users\95kil\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_bcrypt-1.0.8\android\src\main\res
+be.appmire.flutter_bcrypt-release-5 C:\Users\95kil\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_bcrypt-1.0.8\android\src\release\res
+be.appmire.flutter_bcrypt-pngs-6 C:\Users\95kil\Desktop\wallet\build\flutter_bcrypt\generated\res\pngs\release
+be.appmire.flutter_bcrypt-resValues-7 C:\Users\95kil\Desktop\wallet\build\flutter_bcrypt\generated\res\resValues\release
+be.appmire.flutter_bcrypt-rs-8 C:\Users\95kil\Desktop\wallet\build\flutter_bcrypt\generated\res\rs\release
+be.appmire.flutter_bcrypt-mergeReleaseResources-9 C:\Users\95kil\Desktop\wallet\build\flutter_bcrypt\intermediates\incremental\release\mergeReleaseResources\merged.dir
+be.appmire.flutter_bcrypt-mergeReleaseResources-10 C:\Users\95kil\Desktop\wallet\build\flutter_bcrypt\intermediates\incremental\release\mergeReleaseResources\stripped.dir
+be.appmire.flutter_bcrypt-merged_res-11 C:\Users\95kil\Desktop\wallet\build\flutter_bcrypt\intermediates\merged_res\release

@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:wallet/controllers/cubit/document_cubit.dart';
+import 'package:wallet/controllers/validator.dart';
 import 'package:wallet/controllers/wallet_bd.dart';
 import 'package:wallet/pages/bottom_navigation_bar_page.dart';
 import 'package:wallet/pages/card_pages/card_page.dart';
@@ -377,24 +378,28 @@ class _DocumentAddPageState extends State<DocumentAddPage> {
                 child: SizedBox(
                   height: 60,
                   child: ElevatedButton(
-                      onPressed: () async {
-                        context.read<DocumentCubit>().addDocument(PersonData(
-                            id: null,
-                            secondName: secondName.text,
-                            firstName: firstName.text,
-                            thirdName: thirdName.text,
-                            snils: snils.text,
-                            inn: inn.text,
-                            polisOMS: polisOMS.text,
-                            numberPassport: numberPassport.text,
-                            seriaPassport: seriaPassport.text,
-                            snilsPassport: snilsPassport.text,
-                            fromIssues: fromIssues.text,
-                            codePassport: codePassport.text,
-                            placeBorn: placeBorn.text,
-                            gender: selectedGender,
-                            dateBorn: selectedDateBorn,
-                            dateExit: selectedDateExit));
+                    onPressed: () async {
+                      PersonData personData = PersonData(
+                        id: null,
+                        secondName: secondName.text,
+                        firstName: firstName.text,
+                        thirdName: thirdName.text,
+                        snils: snils.text,
+                        inn: inn.text,
+                        polisOMS: polisOMS.text,
+                        numberPassport: numberPassport.text,
+                        seriaPassport: seriaPassport.text,
+                        snilsPassport: snilsPassport.text,
+                        fromIssues: fromIssues.text,
+                        codePassport: codePassport.text,
+                        placeBorn: placeBorn.text,
+                        gender: selectedGender,
+                        dateBorn: selectedDateBorn,
+                        dateExit: selectedDateExit,
+                      );
+
+                      if (DataValidator.validate(personData)) {
+                        context.read<DocumentCubit>().addDocument(personData);
                         Navigator.push(
                           context,
                           PageTransition(
@@ -402,18 +407,35 @@ class _DocumentAddPageState extends State<DocumentAddPage> {
                             child: BottomNavigationBarPage(),
                           ),
                         );
-                      },
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromARGB(255, 50, 43, 85)),
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Ошибка"),
+                            content: Text("Пожалуйста, заполните все поля."),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text("OK"),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(
+                          Color.fromARGB(255, 50, 43, 85)),
+                    ),
+                    child: Text(
+                      "Добавить информацию",
+                      style: GoogleFonts.gabriela(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      child: Text(
-                        "Добавить информацию",
-                        style: GoogleFonts.gabriela(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )),
+                    ),
+                  ),
                 ),
               ),
             ],

@@ -12,11 +12,17 @@ class ContactCubit extends Cubit<ContactState> {
     await selectContact();
   }
 
+  Future<void> deleteContact(int? id) async {
+    final walletDatabase = WalletDatabase();
+    await walletDatabase.deleteContact(id!);
+    await selectContact();
+  }
+
   Future<void> selectContact() async {
     emit(ContactLoading());
     final walletDatabase = WalletDatabase();
-    await walletDatabase.createContactsTable();
-    final allContacts = await walletDatabase.getAllContacts();
+    // await walletDatabase.createContactsTable();
+    final allContacts = await walletDatabase.getContacts();
     if (allContacts.isEmpty) {
       emit(ContacEmpty());
     } else {

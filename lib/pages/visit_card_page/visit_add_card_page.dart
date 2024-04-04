@@ -220,16 +220,42 @@ class _VisitCardAddPageState extends State<VisitCardAddPage> {
                 child: SizedBox(
                   height: 60,
                   child: ElevatedButton(
-                      onPressed: () async {
-                       await context.read<ContactCubit>().addContact(ContactData(
-                            id: null,
-                            firstName: firstName.text,
-                            lastName: secondName.text,
-                            position: position.text,
-                            companyName: companyName.text,
-                            phoneNumber: phoneNumber.text,
-                            email: email.text,
-                            website: website.text));
+                    onPressed: () async {
+                      // Проверка на пустые данные перед добавлением контакта
+                      if (firstName.text.isEmpty ||
+                          secondName.text.isEmpty ||
+                          position.text.isEmpty ||
+                          companyName.text.isEmpty ||
+                          phoneNumber.text.isEmpty ||
+                          email.text.isEmpty ||
+                          website.text.isEmpty) {
+                        // Ошибка: Пустые данные добавления контакта
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Ошибка"),
+                            content: Text("Пожалуйста, заполните все поля."),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text("OK"),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        await context
+                            .read<ContactCubit>()
+                            .addContact(ContactData(
+                              id: null,
+                              firstName: firstName.text,
+                              lastName: secondName.text,
+                              position: position.text,
+                              companyName: companyName.text,
+                              phoneNumber: phoneNumber.text,
+                              email: email.text,
+                              website: website.text,
+                            ));
                         Navigator.push(
                           context,
                           PageTransition(
@@ -237,18 +263,21 @@ class _VisitCardAddPageState extends State<VisitCardAddPage> {
                             child: BottomNavigationBarPage(),
                           ),
                         );
-                      },
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromARGB(255, 50, 43, 85)),
+                      }
+                    },
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(
+                          Color.fromARGB(255, 50, 43, 85)),
+                    ),
+                    child: Text(
+                      "Добавить визитную карту",
+                      style: GoogleFonts.gabriela(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      child: Text(
-                        "Добавить визитную карту",
-                        style: GoogleFonts.gabriela(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )),
+                    ),
+                  ),
                 ),
               ),
             ],

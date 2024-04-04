@@ -25,17 +25,18 @@ class VisitCardViewPage extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(
-                          height: 5,
-                        ),
+                      height: 5,
+                    ),
                     Text(
                       (context.read<ContactCubit>().state as ContactLoaded)
-                              .list[index].companyName,
+                          .list[index]
+                          .companyName,
                       style:
                           TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
                     ),
-                     SizedBox(
-                          height: 5,
-                        ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Row(
                       children: [
                         SizedBox(
@@ -134,7 +135,15 @@ class VisitCardViewPage extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
+          ElevatedButton(
+              onPressed: () {
+                context.read<ContactCubit>().deleteContact(
+                    (context.read<ContactCubit>().state as ContactLoaded)
+                        .list[index]
+                        .id);
+              },
+              child: Text('Удалить'))
         ],
       ),
     );
